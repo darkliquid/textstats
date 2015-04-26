@@ -2,15 +2,7 @@ package textstats
 
 import "regexp"
 
-var (
-	wordsRegexp       = regexp.MustCompile("\\w+")
-	sentencesRegexp   = regexp.MustCompile("[^\\.!?]")
-	lettersRegexp     = regexp.MustCompile("[^a-zA-Z]+")
-	letterRegexp      = regexp.MustCompile("[^a-z]")
-	consontantsRegexp = regexp.MustCompile("[^aeiouy]+")
-	whitespaceRegexp  = regexp.MustCompile("\\s+")
-	capitalRegexp     = regexp.MustCompile("^[A-Z]")
-)
+var consonantsRegexp = regexp.MustCompile("[^aeiouy]+")
 
 // ProblemWords are words that don't follow typical syllable counting rules
 var ProblemWords = map[string]int{

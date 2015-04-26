@@ -4,33 +4,71 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-const (
-	qbf   = "The quick brown fox jumps over the lazy dog"
-	lorem = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-			eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-			ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-			aliquip ex ea commodo consequat. Duis aute irure dolor in
-			reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-			pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-			culpa qui officia deserunt mollit anim id est laborum.`
-)
-
-func TestWordCount(t *testing.T) {
-	assert.Equal(t, 9, WordCount(qbf))
+type StringSuite struct {
+	suite.Suite
 }
 
-func TestLetterCount(t *testing.T) {
-	assert.Equal(t, 35, LetterCount(qbf))
+func (s *StringSuite) TestAverageLettersPerWord() {
+	s.Equal(3.888888888888889, AverageLettersPerWord(qbf))
 }
 
-func TestSentenceCount(t *testing.T) {
-	assert.Equal(t, 4, SentenceCount(lorem))
+func (s *StringSuite) TestAverageSyllablesPerWord() {
+	s.Equal(1.2222222222222223, AverageSyllablesPerWord(qbf))
 }
 
-func TestSyllableCount(t *testing.T) {
+func (s *StringSuite) TestAverageWordsPerSentence() {
+	s.Equal(9, AverageWordsPerSentence(qbf))
+	s.Equal(17.25, AverageWordsPerSentence(lorem))
+}
+
+func (s *StringSuite) TestWordsWithAtLeastNSyllables() {
+	s.Equal(6, WordsWithAtLeastNSyllables(hw, 0, true))
+	s.Equal(6, WordsWithAtLeastNSyllables(hw, 1, true))
+	s.Equal(3, WordsWithAtLeastNSyllables(hw, 2, true))
+	s.Equal(2, WordsWithAtLeastNSyllables(hw, 3, true))
+	s.Equal(1, WordsWithAtLeastNSyllables(hw, 4, true))
+	s.Equal(0, WordsWithAtLeastNSyllables(hw, 5, true))
+
+	s.Equal(4, WordsWithAtLeastNSyllables(hw, 0, false))
+	s.Equal(4, WordsWithAtLeastNSyllables(hw, 1, false))
+	s.Equal(2, WordsWithAtLeastNSyllables(hw, 2, false))
+	s.Equal(2, WordsWithAtLeastNSyllables(hw, 3, false))
+	s.Equal(1, WordsWithAtLeastNSyllables(hw, 4, false))
+	s.Equal(0, WordsWithAtLeastNSyllables(hw, 5, false))
+}
+
+func (s *StringSuite) TestPercentageWordsWithAtLeastNSyllables() {
+	s.Equal(100, PercentageWordsWithAtLeastNSyllables(hw, 0, true))
+	s.Equal(100, PercentageWordsWithAtLeastNSyllables(hw, 1, true))
+	s.Equal(50, PercentageWordsWithAtLeastNSyllables(hw, 2, true))
+	s.Equal(33.33333333333333, PercentageWordsWithAtLeastNSyllables(hw, 3, true))
+	s.Equal(16.666666666666664, PercentageWordsWithAtLeastNSyllables(hw, 4, true))
+	s.Equal(0, PercentageWordsWithAtLeastNSyllables(hw, 5, true))
+
+	s.Equal(66.66666666666666, PercentageWordsWithAtLeastNSyllables(hw, 0, false))
+	s.Equal(66.66666666666666, PercentageWordsWithAtLeastNSyllables(hw, 1, false))
+	s.Equal(33.33333333333333, PercentageWordsWithAtLeastNSyllables(hw, 3, false))
+	s.Equal(33.33333333333333, PercentageWordsWithAtLeastNSyllables(hw, 2, false))
+	s.Equal(16.666666666666664, PercentageWordsWithAtLeastNSyllables(hw, 4, false))
+	s.Equal(0, PercentageWordsWithAtLeastNSyllables(hw, 5, false))
+}
+
+func (s *StringSuite) TestWordCount() {
+	s.Equal(9, WordCount(qbf))
+}
+
+func (s *StringSuite) TestLetterCount() {
+	s.Equal(35, LetterCount(qbf))
+}
+
+func (s *StringSuite) TestSentenceCount() {
+	s.Equal(4, SentenceCount(lorem))
+}
+
+func (s *StringSuite) TestSyllableCount() {
 	words := map[string]int{
 		"advertisement": 4,
 		"bath":          1,
@@ -65,30 +103,34 @@ func TestSyllableCount(t *testing.T) {
 	}
 
 	for word, count := range words {
-		assert.Equal(t, count, SyllableCount(word), fmt.Sprintf("%q should have %d syllables", word, count))
+		s.Equal(count, SyllableCount(word), fmt.Sprintf("%q should have %d syllables", word, count))
 	}
 }
 
-func TestFleschKincaidReadingEase(t *testing.T) {
-	assert.Equal(t, 7.8653804347800005, FleschKincaidReadingEase(lorem))
+func (s *StringSuite) TestFleschKincaidReadingEase() {
+	s.Equal(7.865380434782622, FleschKincaidReadingEase(lorem))
 }
 
-func TestFleschKincaidGradeLevel(t *testing.T) {
-	assert.Equal(t, 16.44764492754, FleschKincaidGradeLevel(lorem))
+func (s *StringSuite) TestFleschKincaidGradeLevel() {
+	s.Equal(16.447644927536235, FleschKincaidGradeLevel(lorem))
 }
 
-func TestGunningFogScore(t *testing.T) {
-	assert.Equal(t, 19.073913043479997, GunningFogScore(lorem))
+func (s *StringSuite) TestGunningFogScore() {
+	s.Equal(19.073913043478264, GunningFogScore(lorem))
 }
 
-func TestColemanLiauIndex(t *testing.T) {
-	assert.Equal(t, 15.681304347829998, ColemanLiauIndex(lorem))
+func (s *StringSuite) TestColemanLiauIndex() {
+	s.Equal(15.681304347826085, ColemanLiauIndex(lorem))
 }
 
-func TestSMOGIndex(t *testing.T) {
-	assert.Equal(t, 13.21893361077, SMOGIndex(lorem))
+func (s *StringSuite) TestSMOGIndex() {
+	s.Equal(13.524018386038225, SMOGIndex(lorem))
 }
 
-func TestAutomatedReadabilityIndex(t *testing.T) {
-	assert.Equal(t, 12.38326086957, AutomatedReadabilityIndex(lorem))
+func (s *StringSuite) TestAutomatedReadabilityIndex() {
+	s.Equal(12.383260869565213, AutomatedReadabilityIndex(lorem))
+}
+
+func TestStringMethods(t *testing.T) {
+	suite.Run(t, new(StringSuite))
 }
