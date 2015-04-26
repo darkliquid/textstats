@@ -11,12 +11,13 @@ import (
 
 // Results is a struct containing the results of an analysis
 type Results struct {
-	Words       int
-	Sentences   int
-	Letters     int
-	Punctuation int
-	Spaces      int
-	Syllables   int
+	Words          int
+	Sentences      int
+	Letters        int
+	Punctuation    int
+	Spaces         int
+	Syllables      int
+	DifficultWords int
 
 	syllableProperNouns map[int]int
 	syllableWords       map[int]int
@@ -92,17 +93,49 @@ func (r *Results) GunningFogScore() float64 {
 
 // ColemanLiauIndex returns the Coleman-Liau index for the given text
 func (r *Results) ColemanLiauIndex() float64 {
-	return (5.89 * (float64(r.Letters) / float64(r.Words))) - (0.3 * (float64(r.Sentences) / float64(r.Words))) - 15.8
+	sentences := float64(r.Sentences)
+	if sentences == 0 {
+		sentences = 1
+	}
+
+	return (5.89 * (float64(r.Letters) / float64(r.Words))) - (0.3 * (sentences / float64(r.Words))) - 15.8
 }
 
 // SMOGIndex returns the SMOG index for the given text
 func (r *Results) SMOGIndex() float64 {
-	return 1.0430 * math.Sqrt((float64(r.WordsWithAtLeastNSyllables(3, true))*(30/float64(r.Sentences)))+3.1291)
+	sentences := float64(r.Sentences)
+	if sentences == 0 {
+		sentences = 1
+	}
+
+	return 1.0430 * math.Sqrt((float64(r.WordsWithAtLeastNSyllables(3, true))*(30/sentences))+3.1291)
 }
 
 // AutomatedReadabilityIndex returns the Automated Readability index for the given text
 func (r *Results) AutomatedReadabilityIndex() float64 {
-	return (4.71 * (float64(r.Letters) / float64(r.Words))) + (0.5 * (float64(r.Words) / float64(r.Sentences))) - 21.43
+	sentences := float64(r.Sentences)
+	if sentences == 0 {
+		sentences = 1
+	}
+
+	return (4.71 * (float64(r.Letters) / float64(r.Words))) + (0.5 * (float64(r.Words) / sentences)) - 21.43
+}
+
+// DaleChallReadabilityScore returns the Dale-Chall readability score for the given text
+func (r *Results) DaleChallReadabilityScore() float64 {
+	difficultyPercentage := (float64(r.DifficultWords) / float64(r.Words)) * 100
+
+	sentences := float64(r.Sentences)
+	if sentences == 0 {
+		sentences = 1
+	}
+
+	score := (0.1579 * difficultyPercentage) + (0.0496 * (float64(r.Words) / sentences))
+	if difficultyPercentage > 5 {
+		score += 3.6365
+	}
+
+	return score
 }
 
 func syllableCount(word string) (sCount int) {
@@ -163,6 +196,17 @@ func analyseWord(word string, res *Results) {
 			res.syllableProperNouns[sCount]++
 		} else {
 			res.syllableProperNouns[sCount] = 1
+		}
+	}
+
+	if _, ok := DaleChallWordList[word]; !ok {
+		matches := pluralRegexp.FindStringSubmatch(word)
+		if len(matches) >= 2 {
+			if _, ok := DaleChallWordList[matches[1]]; !ok {
+				res.DifficultWords++
+			}
+		} else {
+			res.DifficultWords++
 		}
 	}
 }

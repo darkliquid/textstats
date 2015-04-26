@@ -125,6 +125,11 @@ func (s *AnalyseSuite) TestAutomatedReadabilityIndex() {
 	s.Equal(12.383260869565213, res.AutomatedReadabilityIndex())
 }
 
+func (s *AnalyseSuite) TestDaleChallReadabilityScore() {
+	res, _ := Analyse(strings.NewReader(qbf))
+	s.Equal(5.837344444444444, res.DaleChallReadabilityScore())
+}
+
 func TestAnalyseMethods(t *testing.T) {
 	suite.Run(t, new(AnalyseSuite))
 }

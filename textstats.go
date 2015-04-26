@@ -97,3 +97,9 @@ func AutomatedReadabilityIndex(text string) float64 {
 	res, _ := Analyse(strings.NewReader(text))
 	return res.AutomatedReadabilityIndex()
 }
+
+// DaleChallReadabilityScore returns the Dale-Chall readability score for the given text
+func DaleChallReadabilityScore(text string) float64 {
+	res, _ := Analyse(strings.NewReader(text))
+	return res.DaleChallReadabilityScore()
+}

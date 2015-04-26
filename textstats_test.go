@@ -131,6 +131,10 @@ func (s *StringSuite) TestAutomatedReadabilityIndex() {
 	s.Equal(12.383260869565213, AutomatedReadabilityIndex(lorem))
 }
 
+func (s *StringSuite) TestDaleChallReadabilityScore() {
+	s.Equal(5.837344444444444, DaleChallReadabilityScore(qbf))
+}
+
 func TestStringMethods(t *testing.T) {
 	suite.Run(t, new(StringSuite))
 }
