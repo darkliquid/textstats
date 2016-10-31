@@ -35,7 +35,7 @@ func (s *AnalyseSuite) TestAverageSyllablesPerWord() {
 
 func (s *AnalyseSuite) TestAverageWordsPerSentence() {
 	res, _ := Analyse(strings.NewReader(qbf))
-	s.Equal(9, res.AverageWordsPerSentence())
+	s.Equal(9.0, res.AverageWordsPerSentence())
 
 	res, _ = Analyse(strings.NewReader(lorem))
 	s.Equal(17.25, res.AverageWordsPerSentence())
@@ -60,19 +60,19 @@ func (s *AnalyseSuite) TestWordsWithAtLeastNSyllables() {
 
 func (s *AnalyseSuite) TestPercentageWordsWithAtLeastNSyllables() {
 	res, _ := Analyse(strings.NewReader(hw))
-	s.Equal(100, res.PercentageWordsWithAtLeastNSyllables(0, true))
-	s.Equal(100, res.PercentageWordsWithAtLeastNSyllables(1, true))
-	s.Equal(50, res.PercentageWordsWithAtLeastNSyllables(2, true))
+	s.Equal(100.0, res.PercentageWordsWithAtLeastNSyllables(0, true))
+	s.Equal(100.0, res.PercentageWordsWithAtLeastNSyllables(1, true))
+	s.Equal(50.0, res.PercentageWordsWithAtLeastNSyllables(2, true))
 	s.Equal(33.33333333333333, res.PercentageWordsWithAtLeastNSyllables(3, true))
 	s.Equal(16.666666666666664, res.PercentageWordsWithAtLeastNSyllables(4, true))
-	s.Equal(0, res.PercentageWordsWithAtLeastNSyllables(5, true))
+	s.Equal(0.0, res.PercentageWordsWithAtLeastNSyllables(5, true))
 
 	s.Equal(66.66666666666666, res.PercentageWordsWithAtLeastNSyllables(0, false))
 	s.Equal(66.66666666666666, res.PercentageWordsWithAtLeastNSyllables(1, false))
 	s.Equal(33.33333333333333, res.PercentageWordsWithAtLeastNSyllables(3, false))
 	s.Equal(33.33333333333333, res.PercentageWordsWithAtLeastNSyllables(2, false))
 	s.Equal(16.666666666666664, res.PercentageWordsWithAtLeastNSyllables(4, false))
-	s.Equal(0, res.PercentageWordsWithAtLeastNSyllables(5, false))
+	s.Equal(0.0, res.PercentageWordsWithAtLeastNSyllables(5, false))
 }
 
 func (s *AnalyseSuite) TestWordCount() {
